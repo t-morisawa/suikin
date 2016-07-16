@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import argparse
 import numpy as np
-import os
+import sys, os
 
 from scipy import arange, ceil, complex128, dot, exp, float64, hamming, log2, zeros
 from scipy import pi as mpi
@@ -16,7 +18,10 @@ import wave
 
 import cPickle as pickle
 
-import recording 
+import soundDetector
+
+sys.path.append(os.pardir)
+import output.outmod
 
 parser = argparse.ArgumentParser(description='Predict Waveform')
 parser.add_argument('--savename', '-s', default='sample',
@@ -53,7 +58,7 @@ WAVE_OUTPUT_FILENAME = PATH + "/sound.wav"
 IMAGE_OUTPUT_FILENAME = PATH + "/img.png"
 RAW_OUTPUT_FILENAME = PATH + "/data.pkl"
 
-def recordingAndWriting:
+def recordingAndWriting():
     # stream=p.open(format = pyaudio.paInt16,
     #               channels = CHANNELS,
     #               rate = RATE,
@@ -70,8 +75,9 @@ def recordingAndWriting:
     # stream.stop_stream()
     # stream.close()
     # p.terminate()
-    
-    data = recording.record_to_file(WAVE_OUTPUT_FILENAME)
+
+    #wav書込
+    data = soundDetector.record_wrap()
     print WAVE_OUTPUT_FILENAME
     #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
@@ -80,7 +86,11 @@ def recordingAndWriting:
     wf.setframerate(RATE)
     wf.writeframes(data)
     wf.close()
+
+    #読み込み
     
+    
+    #画像生成
     fs, data = read(WAVE_OUTPUT_FILENAME)
     cq_spec, freqs = cq_fft(data, fs)
     w, h = cq_spec.shape
@@ -97,4 +107,3 @@ def recordingAndWriting:
 
 if __name__ == "__main__":
     recordingAndWriting()
-

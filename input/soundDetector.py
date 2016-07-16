@@ -111,11 +111,11 @@ def record():
     r = add_silence(r, 0.5)
     return sample_width, r
 
-def record_to_file(path):
+def record_wrap():
     "Records from the microphone and outputs the resulting data to 'path'"
     sample_width, data = record()
     data = pack('<' + ('h'*len(data)), *data)
-
+    
     return data
 
     # wf = wave.open(path, 'wb')
@@ -127,5 +127,6 @@ def record_to_file(path):
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")
-    record_to_file('demo.wav')
+    #record_to_file('demo.wav')
+    record_wrap()
     print("done - result written to demo.wav")
