@@ -32,18 +32,28 @@ p=pyaudio.PyAudio()
 RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
-ROOT = "../data"
+def get_dir_name(data_dir="../clustering/hayakuchi_data/"):
+    count = 0
+    for dirName, subdirList, fileList in os.walk(data_dir):
+        for dname in subdirList:
+            if dname.isdigit() is True:
+                count+=1
+    return data_dir + str(count)
+
+#ROOT = "../data"
+ROOT = get_dir_name()
 if not os.path.exists(ROOT):
     os.mkdir(ROOT)
-PATH = os.path.join(ROOT, args.savename)
-if not os.path.exists(PATH):
-    os.mkdir(PATH)
+PATH = ROOT    
+# PATH = os.path.join(ROOT, args.savename)
+# if not os.path.exists(PATH):
+#     os.mkdir(PATH)
 
 WAVE_OUTPUT_FILENAME = PATH + "/sound.wav"
 IMAGE_OUTPUT_FILENAME = PATH + "/img.png"
 RAW_OUTPUT_FILENAME = PATH + "/data.pkl"
 
-if __name__ == "__main__":
+def recordingAndWriting:
     # stream=p.open(format = pyaudio.paInt16,
     #               channels = CHANNELS,
     #               rate = RATE,
@@ -85,4 +95,6 @@ if __name__ == "__main__":
     pickle.dump(cq_spec, f)
     f.close()
 
-    
+if __name__ == "__main__":
+    recordingAndWriting()
+
