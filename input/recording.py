@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# 音が閾値超えたら録画を開始するクラス
+# 音が閾値超えたら録音するクラス
 # 参考サイト
 # http://stackoverflow.com/questions/892199/detect-record-audio-in-python
 
@@ -12,7 +12,8 @@ from struct import pack
 import pyaudio
 import wave
 
-THRESHOLD = 500
+THRESHOLD = 500 #音量の閾値
+PERIOD = 100 #持続時間
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
@@ -21,7 +22,6 @@ RATE = 44100
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
     return max(snd_data) < THRESHOLD
-
 
 def normalize(snd_data):
     "Average the volume out"
@@ -44,7 +44,6 @@ def trim(snd_data):
             if not snd_started and abs(i)>THRESHOLD:
                 snd_started = True
                 r.append(i)
-
             elif snd_started:
                 r.append(i)
         return r
@@ -53,9 +52,9 @@ def trim(snd_data):
     snd_data = _trim(snd_data)
 
     # Trim to the right
-    snd_data.reverse()
-    snd_data = _trim(snd_data)
-    snd_data.reverse()
+    # snd_data.reverse()
+    # snd_data = _trim(snd_data)
+    # snd_data.reverse()
     return snd_data
 
 def add_silence(snd_data, seconds):
@@ -99,7 +98,7 @@ def record():
         elif not silent and not snd_started:
             snd_started = True
 
-        if snd_started and num_silent > 30:
+        if snd_started and num_silent > PERIOD:
             break
 
     sample_width = p.get_sample_size(FORMAT)
