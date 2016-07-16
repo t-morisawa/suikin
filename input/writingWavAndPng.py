@@ -21,7 +21,7 @@ import cPickle as pickle
 import soundDetector
 
 sys.path.append(os.pardir)
-import output.outmod
+import output.outmod as outmod
 
 parser = argparse.ArgumentParser(description='Predict Waveform')
 parser.add_argument('--savename', '-s', default='sample',
@@ -87,8 +87,10 @@ def recordingAndWriting():
     wf.writeframes(data)
     wf.close()
 
-    #読み込み
-    
+    #outputの関数を呼ぶ
+    ap = outmod.AudioPlayer()
+    ap.setAudioFile(WAVE_OUTPUT_FILENAME)
+    outmod.playLoop(ap)
     
     #画像生成
     fs, data = read(WAVE_OUTPUT_FILENAME)
