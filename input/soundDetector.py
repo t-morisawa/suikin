@@ -13,7 +13,7 @@ import pyaudio
 import wave
 
 THRESHOLD = 500 #音量の閾値
-PERIOD = 100 #持続時間
+PERIOD = 50 #持続時間
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
@@ -116,12 +116,14 @@ def record_to_file(path):
     sample_width, data = record()
     data = pack('<' + ('h'*len(data)), *data)
 
-    wf = wave.open(path, 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(sample_width)
-    wf.setframerate(RATE)
-    wf.writeframes(data)
-    wf.close()
+    return data
+
+    # wf = wave.open(path, 'wb')
+    # wf.setnchannels(1)
+    # wf.setsampwidth(sample_width)
+    # wf.setframerate(RATE)
+    # wf.writeframes(data)
+    # wf.close()
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")

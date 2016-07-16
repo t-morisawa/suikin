@@ -16,6 +16,7 @@ import wave
 
 import cPickle as pickle
 
+import recording 
 
 parser = argparse.ArgumentParser(description='Predict Waveform')
 parser.add_argument('--savename', '-s', default='sample',
@@ -31,7 +32,7 @@ p=pyaudio.PyAudio()
 RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
-ROOT = "data"
+ROOT = "../data"
 if not os.path.exists(ROOT):
     os.mkdir(ROOT)
 PATH = os.path.join(ROOT, args.savename)
@@ -43,25 +44,26 @@ IMAGE_OUTPUT_FILENAME = PATH + "/img.png"
 RAW_OUTPUT_FILENAME = PATH + "/data.pkl"
 
 if __name__ == "__main__":
-    stream=p.open(format = pyaudio.paInt16,
-                  channels = CHANNELS,
-                  rate = RATE,
-                  frames_per_buffer = CHUNK,
-                  input = True)
+    # stream=p.open(format = pyaudio.paInt16,
+    #               channels = CHANNELS,
+    #               rate = RATE,
+    #               frames_per_buffer = CHUNK,
+    #               input = True)
     
-    frames = []
-    print "start"
-    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        input = stream.read(CHUNK)
-        frames.append(input)
+    # frames = []
+    # print "start"
+    # for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+    #     input = stream.read(CHUNK)
+    #     frames.append(input)
     
-    print "stop"
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
+    # print "stop"
+    # stream.stop_stream()
+    # stream.close()
+    # p.terminate()
     
+    data = recording.record_to_file(WAVE_OUTPUT_FILENAME)
     print WAVE_OUTPUT_FILENAME
-    data = b''.join(frames)
+    #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
