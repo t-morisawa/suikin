@@ -18,8 +18,11 @@ def data_search(data_dir="./data"):
 
 
 def img_load(dname, size=227):
-    img = cv2.imread(dname, 0)
-    img = cv2.resize(img, (size, size))
+    # img = cv2.imread(dname, 0)
+    # img = cv2.resize(img, (size, size))
+    f = open(dname, 'r')
+    img = pickle.load( f )
+    f.close()
     # cv2.imshow("result", img)
     # cv2.waitKey(0)
     #img = np.array(img, dtype=np.float32)
@@ -31,16 +34,20 @@ img_size = 32
 data_name = "./hayakuti_data"
 dirlist, sample_num = data_search(data_name)
 print(dirlist, sample_num)
-all_img = np.empty((0,img_size,img_size), dtype=np.float32)
+#all_img = np.empty((0,img_size,img_size), dtype=np.float32)
+all_img = np.empty((0,1000), dtype=np.float32)
 for dname in dirlist:
     _dname = data_name + "/" + dname + "/img.png"
     img = img_load(_dname, img_size)
-    print img.shape
+    #print img.shape
     #img.fill(a) # debug
     #a += 1 # debug
+    img = np.array(img)
+    print all_img.shape
     all_img = np.append(all_img, [img], axis=0)
 
-all_img_2d = np.reshape(all_img, (all_img.shape[0], all_img.shape[1]*all_img.shape[2]))
+#all_img_2d = np.reshape(all_img, (all_img.shape[0], all_img.shape[1]*all_img.shape[2]))
+all_img_2d = all_img
 print all_img.shape
 
 index = np.array([i for i in range(all_img.shape[0])])

@@ -40,8 +40,11 @@ class ImageMatching:
 
     # グレー画像の取得
     def read(self, imgSrc):
-        img = cv2.imread(imgSrc,0) #0はグレーで読み込ませる引数
-        img = self.resize(img)
+        #img = cv2.imread(imgSrc,0) #0はグレーで読み込ませる引数
+        #img = self.resize(img)
+        f = open(imgSrc, 'r')
+        img = pickle.load( f )
+        f.close()
         return img
 
     # グレー画像の取得
@@ -58,7 +61,10 @@ class ImageMatching:
         imgとtmpの画像サイズが一致している場合は
         1x1の二次元配列が返される
         '''
-        res = cv2.matchTemplate(img,tmp,cv2.TM_CCOEFF_NORMED)
+        img = np.array(img, dtype=np.uint8)
+        tmp = np.array(tmp, dtype=np.uint8)
+        res = cv2.matchTemplate(img,tmp,cv2.TM_SQDIFF)
+        #res = cv2.matchTemplate(img,tmp,cv2.TM_CCOEFF_NORMED)
         return res[0][0]
 
     # def run(self, imgSrc, tmpSrc):
@@ -73,7 +79,8 @@ class ImageMatching:
         simList = []
         for tmp in imgList:
             simList.append(self.getSimilarity(img, tmp))
-        argmax = np.argmax(simList)
+        #argmax = np.argmax(simList)
+        argmax = np.argmin(simList) #SQDIFFなのでargminを取る
         #return imgSrcList[argmax]
         return str(argmax) + '.pkl'
 
@@ -87,6 +94,8 @@ class ImageMatching:
     
 if __name__ == '__main__':
     im = ImageMatching()
-    print im.run('./hayakuti_data/002/img.png')
+    print im.read('./hayakuti_data/001/img.png')
+    #print im.run('./hayakuti_data/002/img.png')
+    
     #res = im.run("hayakuchi_data/0/sample/img.png", "hayakuchi_data/1/sample/img.png")
     #print res
