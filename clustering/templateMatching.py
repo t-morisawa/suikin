@@ -17,19 +17,19 @@ RESIZE_PER = 0.3
 
 class ImageMatching:
     def getClassPathList(self):
-        data_dir='./'
+        data_dir='../clustering/'
         fileList = []
         for num in range(len(glob.glob(data_dir + '*.pkl'))):
             fileList.append(str(num)+'.pkl')
         return fileList
 
-    #ディレクトリを渡すとその中からひとつのファイルが選択される
     def getImagePath(self, class_label_path):
+        class_label_path='../clustering/' + class_label_path
         f = open( class_label_path , 'r' )
         same_label_list = pickle.load( f )
         f.close()
         select_wav_num = random.choice( same_label_list )
-        return "./hayakuti_data/" + "{0:03d}".format(int(select_wav_num)) + "/img.png"
+        return "../clustering/hayakuti_data/" + "{0:03d}".format(int(select_wav_num)) + "/img.png"
 
     # ダウンサイズする関数
     def resize(self, img):
@@ -81,12 +81,12 @@ class ImageMatching:
         cPathList = self.getClassPathList()
         imgPathList = []
         for cPath in cPathList:
-            imgPath = im.getImagePath(cPath)
+            imgPath = self.getImagePath(cPath)
             imgPathList.append(imgPath)
-        print self.getArgMaxSimilarity(nowImg, imgPathList)
+        return self.getArgMaxSimilarity(nowImg, imgPathList)
     
 if __name__ == '__main__':
     im = ImageMatching()
-    im.run('./hayakuti_data/002/img.png')
+    print im.run('./hayakuti_data/002/img.png')
     #res = im.run("hayakuchi_data/0/sample/img.png", "hayakuchi_data/1/sample/img.png")
     #print res
