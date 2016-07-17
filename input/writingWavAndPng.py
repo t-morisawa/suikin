@@ -20,6 +20,10 @@ import cPickle as pickle
 
 import soundDetector
 
+import scipy.fftpack
+from pylab import *
+
+
 sys.path.append(os.pardir)
 import output.outmod as outmod
 
@@ -36,6 +40,12 @@ RATE=44100
 p=pyaudio.PyAudio()
 RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
+
+def data2fft(data):
+    hammingWindow = np.hamming(data.shape[0])
+    data = data * hammingWindow
+    X = np.fft.fft(data)  # FFT                                                                    
+    return [np.sqrt(c.real ** 2 + c.imag ** 2) for c in X]  # 振幅スペクトル 
 
 def get_dir_name(data_dir="../clustering/hayakuti_data/"):
     count = 0
@@ -79,6 +89,8 @@ def recordingAndWriting():
 
     #wav書込
     data = soundDetector.record_wrap()
+
+
     #print WAVE_OUTPUT_FILENAME
     #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
@@ -87,6 +99,27 @@ def recordingAndWriting():
     wf.setframerate(RATE)
     wf.writeframes(data)
     wf.close()
+    start = 0
+    data = frombuffer(data, dtype= "int16") / 32768.0
+    amplitudeSpectrum = data2fft(data)
+    N = data.shape[0]
+    freqList = np.fft.fftfreq(N, d=1.0/44100)
+    subplot(311)  # 3行1列のグラフの1番目の位置にプロット
+    plot(range(start, start+N), data[start:start+N])
+    axis([start, start+N, -1.0, 1.0])
+    xlabel("time [sample]")
+    ylabel("amplitude")
+    fs = 44100
+    # 振幅スペクトルを描画
+    subplot(312)
+    hogehoge = np.array(freqList)
+    hagehage = np.array(amplitudeSpectrum)
+    print hogehoge.shape, hagehage.shape
+    plot(freqList, amplitudeSpectrum, marker= 'o', linestyle='-')
+    axis([0, fs/2, 0, 50])
+    xlabel("frequency [Hz]")
+    ylabel("amplitude spectrum")
+    show()
 
     #outputの関数を呼ぶ
     ap = outmod.AudioPlayer()
