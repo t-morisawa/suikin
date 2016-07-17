@@ -13,7 +13,7 @@ import pyaudio
 import wave
 
 THRESHOLD = 500 #音量の閾値
-PERIOD = 50 #持続時間
+PERIOD = 100 #持続時間
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
@@ -21,6 +21,9 @@ RATE = 44100
 #チャンク音圧の最大値が閾値を下回っているか
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
+    count = 0
+
+    print max(snd_data)
     return max(snd_data) < THRESHOLD
 
 def normalize(snd_data):
@@ -39,9 +42,22 @@ def trim(snd_data):
     def _trim(snd_data):
         snd_started = False
         r = array('h')
+        count = 0
 
         for i in snd_data:
-            if not snd_started and abs(i)>THRESHOLD:
+            if not snd_started and i>THRESHOLD:
+                snd_started = True
+                r.append(i)
+            elif snd_started:
+                r.append(i)
+        return r
+    def __trim(snd_data):
+        snd_started = False
+        r = array('h')
+        count = 0
+
+        for i in snd_data:
+            if not snd_started and i>THRESHOLD/3:
                 snd_started = True
                 r.append(i)
             elif snd_started:
@@ -52,9 +68,9 @@ def trim(snd_data):
     snd_data = _trim(snd_data)
 
     # Trim to the right
-    # snd_data.reverse()
-    # snd_data = _trim(snd_data)
-    # snd_data.reverse()
+    snd_data.reverse()
+    snd_data = __trim(snd_data)
+    snd_data.reverse()
     return snd_data
 
 def add_silence(snd_data, seconds):
@@ -106,8 +122,8 @@ def record():
     stream.close()
     p.terminate()
 
-    r = normalize(r)
     r = trim(r)
+    r = normalize(r)
     r = add_silence(r, 0.5)
     return sample_width, r
 
@@ -125,8 +141,18 @@ def record_wrap():
     # wf.writeframes(data)
     # wf.close()
 
+def write(path):
+    sample_width, data = record()
+    data = pack('<' + ('h'*len(data)), *data)
+    wf = wave.open(path, 'wb')
+    wf.setnchannels(1)
+    wf.setsampwidth(sample_width)
+    wf.setframerate(RATE)
+    wf.writeframes(data)
+    wf.close()
+    
 if __name__ == '__main__':
     print("please speak a word into the microphone")
-    #record_to_file('demo.wav')
-    record_wrap()
+    #record_wrap()
+    write('demo.wav')
     print("done - result written to demo.wav")
