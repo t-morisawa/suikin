@@ -24,6 +24,9 @@ class AudioPlayer:
 
         self.play_time = 0
 
+        play_time = 0
+
+
     def setAudioFile( self, audio_file ):
         self.audio_file = audio_file
 
@@ -51,10 +54,10 @@ class AudioPlayer:
                              output=True)
 
         data = self.wf.readframes(CHUNK)
-
+        #print type(data)
         self.play_time = float(self.wf.getnframes()) / self.wf.getframerate()
-        print self.play_time
-        #####
+    
+#####
         time.sleep( self.wait_time )
 
         # play stream (3)
@@ -74,10 +77,12 @@ class AudioPlayer:
         self.stream.close()
         # close PyAudio (5)
         p.terminate()
+
         
         # Loop再生
         if self.loop_count < self.loop_times:
-            self.audio_thread = threading.Timer( self.wait_time, self.playLoopAudio )
+            #self.audio_thread = threading.Timer( self.wait_time, self.playLoopAudio )
+            self.audio_thread = threading.Timer( 0, self.playLoopAudio )
             self.audio_thread.start()
             self.loop_count += 1
 
@@ -85,6 +90,8 @@ def playLoop( player ):
     #time.sleep( player.dely_time )
     # 再生は別のスレッドでする
     audio_thread = threading.Thread( target = player.playLoopAudio )
+    #time = player.getAudioPlayTime( player )
+    #print time
     audio_thread.start()
 
 #def playSerial( player ):
