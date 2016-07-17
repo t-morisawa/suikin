@@ -68,9 +68,9 @@ def trim(snd_data):
     snd_data = _trim(snd_data)
 
     # Trim to the right
-    snd_data.reverse()
-    snd_data = __trim(snd_data)
-    snd_data.reverse()
+    # snd_data.reverse()
+    # snd_data = __trim(snd_data)
+    # snd_data.reverse()
     return snd_data
 
 def add_silence(snd_data, seconds):
