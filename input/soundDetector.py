@@ -23,7 +23,7 @@ def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
     count = 0
 
-    print max(snd_data)
+    #print max(snd_data)
     return max(snd_data) < THRESHOLD
 
 def normalize(snd_data):

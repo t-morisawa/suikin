@@ -79,7 +79,7 @@ def recordingAndWriting():
 
     #wav書込
     data = soundDetector.record_wrap()
-    print WAVE_OUTPUT_FILENAME
+    #print WAVE_OUTPUT_FILENAME
     #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
     wf.setnchannels(CHANNELS)
@@ -107,6 +107,8 @@ def recordingAndWriting():
     f = open(RAW_OUTPUT_FILENAME, 'w')
     pickle.dump(cq_spec, f)
     f.close()
+
+    return IMAGE_OUTPUT_FILENAME
 
 if __name__ == "__main__":
     recordingAndWriting()

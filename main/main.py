@@ -12,8 +12,8 @@ import clustering.templateMatching as tm
 import output.test_out as output
 
 if __name__ == '__main__':
-    input.recordingAndWriting()
+    fname = input.recordingAndWriting()
     im = tm.ImageMatching()
-    classfilename = im.run('../clustering/hayakuti_data/002/img.png')
+    classfilename = im.run(fname)
     classfilename = '../clustering/' + classfilename
     output.output(classfilename)
