@@ -37,13 +37,14 @@ p=pyaudio.PyAudio()
 RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
-def get_dir_name(data_dir="../clustering/hayakuchi_data/"):
+def get_dir_name(data_dir="../clustering/hayakuti_data/"):
     count = 0
     for dirName, subdirList, fileList in os.walk(data_dir):
         for dname in subdirList:
             if dname.isdigit() is True:
                 count+=1
-    return data_dir + str(count)
+    count+=1
+    return data_dir + "{0:03d}".format(count)
 
 #ROOT = "../data"
 ROOT = get_dir_name()
