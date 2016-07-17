@@ -4,7 +4,7 @@ import random
 import cPickle as pickle
 import cv2
 
-MAX_PLAY_NUM = 5
+MAX_PLAY_NUM = 4
 
 
 def output( class_label_path ):
@@ -18,15 +18,18 @@ def output( class_label_path ):
     """
     # 
     seq_list = []
-    x =5.0
+    x =2.0
     p = 0
     i = 0
-    for i in range( 0, 20 ):
+    for i in range( 0, 10 ):
+        seq_list.append( 2*(i-1)+2 )
         for ii in range( 0, i ):
-            p = p + x/(i) - 1
-            seq_list.append( p )
+            p = p + x/(i) 
+            #seq_list.append( 3*(i-1)+1 )
     print seq_list
+    #seq_list
 
+    
     f = open( class_label_path , 'r' ) #read
     same_label_list = pickle.load( f ) #np
     f.close()
@@ -34,13 +37,13 @@ def output( class_label_path ):
     
     # Listとして設定
     player_pack = []
-    for i in range(0, MAX_PLAY_NUM): # 
+    for i in range(MAX_PLAY_NUM): # 
         player_pack.append( outmod.AudioPlayer() ) # 新たなAudioPlayerをListに追加
         out_wav_num = random.choice( same_label_list )
         #out_wav_num = same_label_list[i-1]
         player_pack[i].setAudioFile( "../clustering/hayakuti_data/" + "{0:03d}".format(int(out_wav_num)) + "/sound.wav" )
         player_pack[i].setAudioWaitTime( random.uniform( seq_list[i] , seq_list[i] ) )
-        player_pack[i-1].setAudioLoopTimes( random.randint( 0, 0 ) )
+        player_pack[i].setAudioLoopTimes( random.randint( 0, 0 ) )
 
     # 基本再生
     # outmod2.playLoop( player1 )
@@ -53,4 +56,5 @@ def output( class_label_path ):
 if __name__ == "__main__":
 
     input_label = 4 # 入力音声のラベルが1とする    
+    
     output( "../clustering/"+ str(input_label) +".pkl" )
