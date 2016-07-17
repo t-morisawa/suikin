@@ -42,6 +42,7 @@ RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
 def data2fft(data):
+    data = frombuffer(data, dtype= "int16") / 32768.0
     hammingWindow = np.hamming(data.shape[0])
     data = data * hammingWindow
     X = np.fft.fft(data)  # FFT                                                                    
@@ -100,26 +101,8 @@ def recordingAndWriting():
     wf.writeframes(data)
     wf.close()
     start = 0
-    data = frombuffer(data, dtype= "int16") / 32768.0
-    amplitudeSpectrum = data2fft(data)
-    N = data.shape[0]
-    freqList = np.fft.fftfreq(N, d=1.0/44100)
-    subplot(311)  # 3行1列のグラフの1番目の位置にプロット
-    plot(range(start, start+N), data[start:start+N])
-    axis([start, start+N, -1.0, 1.0])
-    xlabel("time [sample]")
-    ylabel("amplitude")
-    fs = 44100
-    # 振幅スペクトルを描画
-    subplot(312)
-    hogehoge = np.array(freqList)
-    hagehage = np.array(amplitudeSpectrum)
-    print hogehoge.shape, hagehage.shape
-    plot(freqList, amplitudeSpectrum, marker= 'o', linestyle='-')
-    axis([0, fs/2, 0, 50])
-    xlabel("frequency [Hz]")
-    ylabel("amplitude spectrum")
-    show()
+
+    fft_data = data2fft(data)
 
     #outputの関数を呼ぶ
     ap = outmod.AudioPlayer()
