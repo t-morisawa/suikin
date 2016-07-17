@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import argparse
 import numpy as np
-import os
+import sys, os
 
 from scipy import arange, ceil, complex128, dot, exp, float64, hamming, log2, zeros
 from scipy import pi as mpi
@@ -16,6 +18,10 @@ import wave
 
 import cPickle as pickle
 
+import soundDetector
+
+sys.path.append(os.pardir)
+import output.outmod as outmod
 
 parser = argparse.ArgumentParser(description='Predict Waveform')
 parser.add_argument('--savename', '-s', default='sample',
@@ -31,44 +37,63 @@ p=pyaudio.PyAudio()
 RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
-ROOT = "data"
+def get_dir_name(data_dir="../clustering/hayakuti_data/"):
+    count = 0
+    for dirName, subdirList, fileList in os.walk(data_dir):
+        for dname in subdirList:
+            if dname.isdigit() is True:
+                count+=1
+    count+=1
+    return data_dir + "{0:03d}".format(count)
+
+#ROOT = "../data"
+ROOT = get_dir_name()
 if not os.path.exists(ROOT):
     os.mkdir(ROOT)
-PATH = os.path.join(ROOT, args.savename)
-if not os.path.exists(PATH):
-    os.mkdir(PATH)
+PATH = ROOT    
+# PATH = os.path.join(ROOT, args.savename)
+# if not os.path.exists(PATH):
+#     os.mkdir(PATH)
 
 WAVE_OUTPUT_FILENAME = PATH + "/sound.wav"
 IMAGE_OUTPUT_FILENAME = PATH + "/img.png"
 RAW_OUTPUT_FILENAME = PATH + "/data.pkl"
 
-if __name__ == "__main__":
-    stream=p.open(format = pyaudio.paInt16,
-                  channels = CHANNELS,
-                  rate = RATE,
-                  frames_per_buffer = CHUNK,
-                  input = True)
+def recordingAndWriting():
+    # stream=p.open(format = pyaudio.paInt16,
+    #               channels = CHANNELS,
+    #               rate = RATE,
+    #               frames_per_buffer = CHUNK,
+    #               input = True)
     
-    frames = []
-    print "start"
-    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        input = stream.read(CHUNK)
-        frames.append(input)
+    # frames = []
+    # print "start"
+    # for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+    #     input = stream.read(CHUNK)
+    #     frames.append(input)
     
-    print "stop"
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-    
+    # print "stop"
+    # stream.stop_stream()
+    # stream.close()
+    # p.terminate()
+
+    #wav書込
+    data = soundDetector.record_wrap()
     print WAVE_OUTPUT_FILENAME
-    data = b''.join(frames)
+    #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
     wf.setframerate(RATE)
     wf.writeframes(data)
     wf.close()
+
+    #outputの関数を呼ぶ
+    ap = outmod.AudioPlayer()
+    ap.setAudioFile(WAVE_OUTPUT_FILENAME)
+    outmod.playLoop(ap)
     
+    #画像生成
     fs, data = read(WAVE_OUTPUT_FILENAME)
     cq_spec, freqs = cq_fft(data, fs)
     w, h = cq_spec.shape
@@ -83,4 +108,5 @@ if __name__ == "__main__":
     pickle.dump(cq_spec, f)
     f.close()
 
-    
+if __name__ == "__main__":
+    recordingAndWriting()
