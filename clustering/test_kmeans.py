@@ -6,6 +6,8 @@ from sklearn.cluster import KMeans
 import cv2
 import cPickle as pickle
 
+CLASS_NUM = 5
+
 def data_search(data_dir="./data"):
     dirlist = []
     sample_num = []
@@ -54,7 +56,7 @@ index = np.array([i for i in range(all_img.shape[0])])
 
 # K-means クラスタリングをおこなう
 # この例では 3 つのグループに分割 (メルセンヌツイスターの乱数の種を 10 とする)
-kmeans_model = KMeans(n_clusters=10, random_state=10).fit(all_img_2d)
+kmeans_model = KMeans(n_clusters=CLASS_NUM, random_state=CLASS_NUM).fit(all_img_2d)
 
 # 分類先となったラベルを取得する
 labels = kmeans_model.labels_
@@ -62,10 +64,10 @@ labels = kmeans_model.labels_
 
 # ラベル (班) 、成績、三科目の合計得点を表示する
 ii = 0
-classta = np.zeros((10, 1), dtype=np.int32)
+classta = np.zeros((CLASS_NUM, 1), dtype=np.int32)
 print classta.shape
 
-for c in range(10):
+for c in range(CLASS_NUM):
     classta = np.zeros(0, dtype=np.int32)
     for i in range(len(dirlist)):
         if c == labels[i]:

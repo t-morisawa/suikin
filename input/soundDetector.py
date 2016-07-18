@@ -13,7 +13,7 @@ import pyaudio
 import wave
 
 THRESHOLD = 500 #音量の閾値
-PERIOD = 100 #持続時間
+PERIOD = 50 #持続時間
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
