@@ -101,7 +101,9 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
-    fft_data = data2fft(data)
+    # print 'start fft'
+    # fft_data = data2fft(data)
+    # print 'finish fft'
 
     #outputの関数を呼ぶ
     ap = outmod.AudioPlayer()
@@ -109,9 +111,9 @@ def recordingAndWriting():
     outmod.playLoop(ap)
     
     # FFT結果を保存
-    file_fft = open(IMAGE_OUTPUT_FILENAME, 'w')
-    pickle.dump(fft_data[0:1000], file_fft)
-    file_fft.close()
+    # file_fft = open(IMAGE_OUTPUT_FILENAME, 'w')
+    # pickle.dump(fft_data[0:1000], file_fft)
+    # file_fft.close()
 
     # 画像生成
     # fs, data = read(WAVE_OUTPUT_FILENAME)
@@ -129,7 +131,8 @@ def recordingAndWriting():
     # pickle.dump(cq_spec, f)
     # f.close()
 
-    return IMAGE_OUTPUT_FILENAME
+    #return IMAGE_OUTPUT_FILENAME
+    return WAVE_OUTPUT_FILENAME
 
 if __name__ == "__main__":
     recordingAndWriting()

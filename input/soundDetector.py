@@ -132,6 +132,7 @@ def record_wrap():
     sample_width, data = record()
     data = pack('<' + ('h'*len(data)), *data)
     
+    print 'finish recording'
     return data
 
     # wf = wave.open(path, 'wb')

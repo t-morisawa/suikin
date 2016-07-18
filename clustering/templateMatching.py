@@ -29,7 +29,7 @@ class ImageMatching:
         same_label_list = pickle.load( f )
         f.close()
         select_wav_num = random.choice( same_label_list )
-        return "../clustering/hayakuti_data/" + "{0:03d}".format(int(select_wav_num)) + "/img.png"
+        return "../clustering/hayakuti_data/" + "{0:03d}".format(int(select_wav_num)) +"/fft.pkl"
 
     # ダウンサイズする関数
     def resize(self, img):

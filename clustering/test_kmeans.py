@@ -39,7 +39,7 @@ print(dirlist, sample_num)
 #all_img = np.empty((0,img_size,img_size), dtype=np.float32)
 all_img = np.empty((0,1000), dtype=np.float32)
 for dname in dirlist:
-    _dname = data_name + "/" + dname + "/img.png"
+    _dname = data_name + "/" + dname + "/fft.pkl"
     img = img_load(_dname, img_size)
     #print img.shape
     #img.fill(a) # debug
