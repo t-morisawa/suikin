@@ -102,7 +102,7 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
-    fft_data = data2fft(data)
+    #fft_data = data2fft(data)
 
     #outputの関数を呼ぶ
     ap = outmod.AudioPlayer()
