@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# 目的: データが何もない状態から、データを生成する。
+
 import sys
 sys.path.append('..')
 sys.path.insert(0, 'input')
@@ -17,8 +19,8 @@ if __name__ == '__main__':
     fs, data = ps.openFile(wavname)
     dirname = ps.getDirNameFromSoundFile(wavname)
     ps.writefft(data,dirname)
-    im = tm.ImageMatching()
-    fftname = dirname+'/fft.pkl'
-    classfilename = im.run(fftname)
-    classfilename = '../clustering/' + classfilename
-    output.output(classfilename)
+    # im = tm.ImageMatching()
+    # fftname = dirname+'/fft.pkl'
+    # classfilename = im.run(fftname)
+    # classfilename = '../clustering/' + classfilename
+    # output.output(classfilename)

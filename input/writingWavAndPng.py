@@ -42,7 +42,7 @@ RECORD_SECONDS = args.recordingtime
 CHANNELS = 1
 
 def data2fft(data):
-    data = frombuffer(data, dtype= "int16") / 32768.0
+    data = np.frombuffer(data, dtype= "int16") / 32768.0
     hammingWindow = np.hamming(data.shape[0])
     data = data * hammingWindow
     X = np.fft.fft(data)  # FFT                                                                    
@@ -91,7 +91,6 @@ def recordingAndWriting():
     #wav書込
     data = soundDetector.record_wrap()
 
-
     #print WAVE_OUTPUT_FILENAME
     #data = b''.join(frames)
     wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
@@ -102,29 +101,38 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
-    #fft_data = data2fft(data)
+    # print 'start fft'
+    # fft_data = data2fft(data)
+    # print 'finish fft'
 
     #outputの関数を呼ぶ
     ap = outmod.AudioPlayer()
     ap.setAudioFile(WAVE_OUTPUT_FILENAME)
     outmod.playLoop(ap)
     
-    #画像生成
-    fs, data = read(WAVE_OUTPUT_FILENAME)
-    cq_spec, freqs = cq_fft(data, fs)
-    w, h = cq_spec.shape
-    fig = pl.figure()
-    fig.add_subplot(111)
-    pl.imshow(abs(cq_spec).T, aspect = "auto", origin = "lower")
-    pl.tick_params(labelbottom='off')
-    pl.tick_params(labelleft='off')
-    pl.savefig(IMAGE_OUTPUT_FILENAME, bbox_inches='tight')
+    # FFT結果を保存
+    # file_fft = open(IMAGE_OUTPUT_FILENAME, 'w')
+    # pickle.dump(fft_data[0:1000], file_fft)
+    # file_fft.close()
 
-    f = open(RAW_OUTPUT_FILENAME, 'w')
-    pickle.dump(cq_spec, f)
-    f.close()
+    # 画像生成
+    # fs, data = read(WAVE_OUTPUT_FILENAME)
+    # cq_spec, freqs = cq_fft(data, fs)
+    # w, h = cq_spec.shape
+    # fig = pl.figure()
+    # fig.add_subplot(111)
+    # pl.imshow(abs(cq_spec).T, aspect = "auto", origin = "lower")
+    # pl.tick_params(labelbottom='off')
+    # pl.tick_params(labelleft='off')
+    # pl.savefig(IMAGE_OUTPUT_FILENAME, bbox_inches='tight')
 
-    return IMAGE_OUTPUT_FILENAME
+    # dumpを保存
+    # f = open(RAW_OUTPUT_FILENAME, 'w')
+    # pickle.dump(cq_spec, f)
+    # f.close()
+
+    #return IMAGE_OUTPUT_FILENAME
+    return WAVE_OUTPUT_FILENAME
 
 if __name__ == "__main__":
     recordingAndWriting()
