@@ -12,11 +12,12 @@ from struct import pack
 import pyaudio
 import wave
 
-THRESHOLD = 500 #音量の閾値
-PERIOD = 50 #持続時間
+THRESHOLD = 1000 #音量の閾値
+PERIOD = 40 #持続時間
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
+FTIME = 0.05 #前の時間（多分s）
 
 #チャンク音圧の最大値が閾値を下回っているか
 def is_silent(snd_data):
@@ -124,7 +125,7 @@ def record():
 
     r = trim(r)
     r = normalize(r)
-    r = add_silence(r, 0.5)
+    r = add_silence(r, FTIME)
     return sample_width, r
 
 def record_wrap():
