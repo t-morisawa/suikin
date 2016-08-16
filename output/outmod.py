@@ -4,6 +4,7 @@ import pyaudio
 import wave
 import time
 import threading
+import numpy as np
 from pylab import *
 import struct
 
@@ -60,7 +61,7 @@ class AudioPlayer:
         # While毎にCHUNKの分だけ出力，出力が返らなくなればBreak
         ii = 1
         while len(data) > 0:
-            data = frombuffer(data, dtype="int16") /  32768.0
+            data = np.frombuffer(data, dtype="int16") /  32768.0
             data = [int(x*32768.0)*self.damp_ratio/ii for x in data ]##################################
             data = struct.pack("h" * len(data), *data)
             self.stream.write(data)
