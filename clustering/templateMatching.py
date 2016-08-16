@@ -16,6 +16,8 @@ imageMatchingのインスタンス.run(imagepath)で
 RESIZE_PER = 0.3
 
 class ImageMatching:
+    # クラスファイルのリストを取得
+    # 返されるのは.pklのはず
     def getClassPathList(self):
         data_dir='../clustering/'
         fileList = []
@@ -23,6 +25,7 @@ class ImageMatching:
             fileList.append(str(num)+'.pkl')
         return fileList
 
+    # クラスファイルに含まれるsound番号からランダムで一つ選びfftの結果を返す
     def getImagePath(self, class_label_path):
         class_label_path='../clustering/' + class_label_path
         f = open( class_label_path , 'r' )
@@ -84,6 +87,8 @@ class ImageMatching:
         #return imgSrcList[argmax]
         return str(argmax) + '.pkl'
 
+    # 1. クラスタリング結果を読み込む
+    # 2. 
     def run(self, nowImg):
         cPathList = self.getClassPathList()
         imgPathList = []
