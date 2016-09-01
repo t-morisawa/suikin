@@ -13,6 +13,8 @@ from scipy.io.wavfile import read
 from matplotlib import pylab as pl
 from constant_q_trans import *
 
+from datetime import datetime
+
 import pyaudio
 import wave
 
@@ -101,6 +103,8 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
+    starttime = datetime.now()
+
     # print 'start fft'
     # fft_data = data2fft(data)
     # print 'finish fft'
@@ -132,7 +136,7 @@ def recordingAndWriting():
     # f.close()
 
     #return IMAGE_OUTPUT_FILENAME
-    return WAVE_OUTPUT_FILENAME
+    return WAVE_OUTPUT_FILENAME, starttime
 
 if __name__ == "__main__":
     recordingAndWriting()

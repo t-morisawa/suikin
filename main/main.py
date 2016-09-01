@@ -13,7 +13,7 @@ import clustering.templateMatching as tm
 import output.test_out as output
 
 if __name__ == '__main__':
-    wavname = input.recordingAndWriting()
+    wavname, starttime = input.recordingAndWriting()
     fs, data = ps.openFile(wavname)
     dirname = ps.getDirNameFromSoundFile(wavname)
     ps.writefft(data,dirname)
