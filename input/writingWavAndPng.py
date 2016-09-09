@@ -90,8 +90,8 @@ def recordingAndWriting():
     # stream.close()
     # p.terminate()
 
-    #wav書込
-    data = soundDetector.record_wrap()
+    #音声取得、wav書込
+    data, starttime = soundDetector.record_wrap()
 
     #print WAVE_OUTPUT_FILENAME
     #data = b''.join(frames)
@@ -103,7 +103,7 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
-    starttime = datetime.now()
+    #starttime = datetime.now()
 
     # print 'start fft'
     # fft_data = data2fft(data)

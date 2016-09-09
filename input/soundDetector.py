@@ -8,6 +8,7 @@
 from sys import byteorder
 from array import array
 from struct import pack
+from datetime import datetime
 
 import pyaudio
 import wave
@@ -18,6 +19,9 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
 FTIME = 0.05 #前の時間（多分s）
+
+#録音開始時刻
+STARTTIME = -1
 
 #チャンク音圧の最大値が閾値を下回っているか
 def is_silent(snd_data):
@@ -114,6 +118,8 @@ def record():
             num_silent += 1
         elif not silent and not snd_started:
             snd_started = True
+            global STARTTIME
+            STARTTIME = datetime.now()
 
         if snd_started and num_silent > PERIOD:
             break
@@ -134,7 +140,7 @@ def record_wrap():
     data = pack('<' + ('h'*len(data)), *data)
     
     print 'finish recording'
-    return data
+    return data, STARTTIME
 
     # wf = wave.open(path, 'wb')
     # wf.setnchannels(1)
