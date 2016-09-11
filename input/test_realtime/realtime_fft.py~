@@ -8,21 +8,17 @@ import time
 
 import numpy as np
 import pyaudio
-import threading
 
-from train import CNN_predict
 
-class Spectrum(threading.Thread):
+class Spectrum(object):
 
     FORMAT = pyaudio.paFloat32
     CHANNELS = 1
     RATE = 16000
 
     def __init__(self):
-        super(Spectrum, self).__init__()
         self.pa = pyaudio.PyAudio()
         self.last_samples = None
-        self.pr = []
         atexit.register(self.pa.terminate)
 
     def fft(self, samples):
@@ -33,19 +29,20 @@ class Spectrum(threading.Thread):
 
     def callback(self, in_data, frame_count, time_info, status):
         data = np.fromstring(in_data, np.float32)
+        pr = []
         for f,v in self.fft(data)[256-64:256]:
-            self.pr.append(str(min(9, max(0, int((v+50)/10)))))
-        # print ''.join(pr)
+            pr.append(str(min(9, max(0, int((v+50)/10)))))
+        print ''.join(pr)
         return (in_data, self.recording)
 
-    def run(self):
+    def record(self):
         self.recording = pyaudio.paContinue
         stream = self.pa.open(format = self.FORMAT,
                         channels = self.CHANNELS, 
                         rate = self.RATE, 
                         input = True,
                         output = False,
-                        # frames_per_buffer = self.FRAME_LEN,
+                        #frames_per_buffer = self.FRAME_LEN,
                         frames_per_buffer = 512,
                         stream_callback = self.callback)
         stream.start_stream()
@@ -59,15 +56,6 @@ class Spectrum(threading.Thread):
         stream.start_stream()
         stream.close()
 
-
 if __name__ == '__main__':
-    # spe = Spectrum()
-    # spe.start()
-
-    for i in range(5):
-        time.sleep(0.5)
-        # tmp_fft = spe.pr
-        # tmp_fft = tmp_fft[len(tmp_fft)-641 : len(tmp_fft)-1]
-        tmp_fft = np.ones([640, 640])
-        next_sound = CNN_predict(tmp_fft)
-        print next_sound
+    spe = Spectrum()
+    spe.record()
