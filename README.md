@@ -1,6 +1,11 @@
 
 # suikin
 
+実行ファイルはmainディレクトリの下
+createSoundAndFFT.py : 入力
+play.py : 出力
+main.py : 入力&出力
+
 集めたデータが無い状態から実行する方法
 
 1. main/createSoundAndFFT.py を実行して録音&FFT
