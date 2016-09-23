@@ -3,6 +3,7 @@
 import argparse
 import numpy as np
 import sys, os
+from datetime import datetime
 
 from scipy import arange, ceil, complex128, dot, exp, float64, hamming, log2, zeros
 from scipy import pi as mpi
@@ -23,6 +24,10 @@ from pylab import *
 
 sys.path.append(os.pardir)
 import output.outmod as outmod
+
+import ConfigParser
+inifile = ConfigParser.SafeConfigParser()
+inifile.read("../conf/config.ini")
 
 # /sound.wavを削除して返す
 def getDirNameFromSoundFile(filename):
@@ -71,7 +76,7 @@ def writeImage(fs, data, path):
     f.close()
 
 if __name__ == "__main__":
-    path = '../clustering/hayakuti_data/001'
+    path = '../clustering/'+inifile.get("config","sound_dir")+'/001'
     sound = path + '/sound.wav'
     # fsはサンプリング周波数
     fs, data = openFile(sound)

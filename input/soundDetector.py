@@ -13,12 +13,18 @@ from datetime import datetime
 import pyaudio
 import wave
 
-THRESHOLD = 1000 #音量の閾値
-PERIOD = 40 #持続時間
-CHUNK_SIZE = 1024
+import ConfigParser
+inifile = ConfigParser.SafeConfigParser()
+inifile.read("../conf/config.ini")
+varfile = ConfigParser.SafeConfigParser()
+varfile.read("../conf/var.ini")
+
+THRESHOLD = varfile.getint("input","threshold")
+PERIOD = varfile.getint("input","period")
+CHUNK_SIZE = varfile.getint("input","chunk_size")
+RATE = varfile.getint("input","rate")
+FTIME = varfile.getfloat("input","ftime")
 FORMAT = pyaudio.paInt16
-RATE = 44100
-FTIME = 0.05 #前の時間（多分s）
 
 #録音開始時刻
 STARTTIME = -1
@@ -97,8 +103,8 @@ def record():
     """
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels=1, rate=RATE,
-        input=True, output=True,
-        frames_per_buffer=CHUNK_SIZE)
+                    input=True, output=True,
+                    frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
     snd_started = False

@@ -1,4 +1,5 @@
-# coding: utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import shutil
 import numpy as np
@@ -6,7 +7,13 @@ from sklearn.cluster import KMeans
 import cv2
 import cPickle as pickle
 
-CLASS_NUM = 5
+import ConfigParser
+inifile = ConfigParser.SafeConfigParser()
+inifile.read("../conf/config.ini")
+varfile = ConfigParser.SafeConfigParser()
+varfile.read("../conf/var.ini")
+
+CLASS_NUM = varfile.getint("clustering", "class_num")
 
 def data_search(data_dir="./data"):
     dirlist = []
@@ -33,7 +40,7 @@ def img_load(dname, size=227):
     return img
 
 img_size = 32
-data_name = "./hayakuti_data"
+data_name = "./"+inifile.get("config","sound_dir")
 dirlist, sample_num = data_search(data_name)
 print(dirlist, sample_num)
 #all_img = np.empty((0,img_size,img_size), dtype=np.float32)

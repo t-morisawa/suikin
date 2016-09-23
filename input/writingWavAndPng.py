@@ -25,6 +25,13 @@ import soundDetector
 import scipy.fftpack
 from pylab import *
 
+import ConfigParser
+inifile = ConfigParser.SafeConfigParser()
+inifile.read("../conf/config.ini")
+
+varfile = ConfigParser.SafeConfigParser()
+varfile.read("../conf/var.ini")
+
 
 sys.path.append(os.pardir)
 import output.outmod as outmod
@@ -36,12 +43,11 @@ parser.add_argument('--recordingtime', '-r', type=float, default=5,
                     help='Recording time')
 args = parser.parse_args()
 
+CHUNK=varfile.getint("input","chunk")
+RATE=varfile.getint("input","rate")
+CHANNELS=varfile.getint("input","channels")
 
-CHUNK=1024
-RATE=44100
 p=pyaudio.PyAudio()
-RECORD_SECONDS = args.recordingtime
-CHANNELS = 1
 
 def data2fft(data):
     data = np.frombuffer(data, dtype= "int16") / 32768.0
@@ -50,7 +56,7 @@ def data2fft(data):
     X = np.fft.fft(data)  # FFT                                                                    
     return [np.sqrt(c.real ** 2 + c.imag ** 2) for c in X]  # 振幅スペクトル 
 
-def get_dir_name(data_dir="../clustering/hayakuti_data/"):
+def get_dir_name(data_dir="../clustering/"+inifile.get("config","sound_dir")+"/"):
     count = 0
     for dirName, subdirList, fileList in os.walk(data_dir):
         for dname in subdirList:
@@ -68,7 +74,7 @@ PATH = ROOT
 # if not os.path.exists(PATH):
 #     os.mkdir(PATH)
 
-WAVE_OUTPUT_FILENAME = PATH + "/sound.wav"
+WAVE_OUTPUT_FILENAME = PATH + "/"+inifile.get("config","sound_file")
 IMAGE_OUTPUT_FILENAME = PATH + "/img.png"
 RAW_OUTPUT_FILENAME = PATH + "/data.pkl"
 
@@ -103,17 +109,27 @@ def recordingAndWriting():
     wf.close()
     start = 0
 
+    #outputの関数を呼ぶ
+    ap = outmod.AudioPlayer()
+    ap.setAudioFile(WAVE_OUTPUT_FILENAME)
+    outmod.playLoop(ap)
+
+    ap1 = outmod.AudioPlayer()
+    ap1.setAudioFile(WAVE_OUTPUT_FILENAME)
+    ap1.setAudioWaitTime(0.3)
+    outmod.playLoop(ap1)
+
+    ap2 = outmod.AudioPlayer()
+    ap2.setAudioFile(WAVE_OUTPUT_FILENAME)
+    ap2.setAudioWaitTime(0.6)
+    outmod.playLoop(ap2)
+    
     #starttime = datetime.now()
 
     # print 'start fft'
     # fft_data = data2fft(data)
     # print 'finish fft'
 
-    #outputの関数を呼ぶ
-    ap = outmod.AudioPlayer()
-    ap.setAudioFile(WAVE_OUTPUT_FILENAME)
-    outmod.playLoop(ap)
-    
     # FFT結果を保存
     # file_fft = open(IMAGE_OUTPUT_FILENAME, 'w')
     # pickle.dump(fft_data[0:1000], file_fft)

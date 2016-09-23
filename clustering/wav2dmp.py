@@ -16,10 +16,10 @@ def wav2dmp(wavpath, dumppath):
     file_fft.close()
 
 if __name__ == "__main__":
-    for dirName, subdirList, fileList in os.walk('hayakuti_data'):
-        for dname in subdirList:
-            print dname
-    wav2dmp('sound.wav', 'test.dump')
-    f = open( 'test.dump' , 'r' )
-    print pickle.load( f )
-    f.close()
+    # for dirName, subdirList, fileList in os.walk('hayakuti_data'):
+    #     for dname in subdirList:
+    #         print dname
+    wav2dmp('sound.wav', 'fft.pkl')
+    # f = open( 'test.dump' , 'r' )
+    # print pickle.load( f )
+    # f.close()

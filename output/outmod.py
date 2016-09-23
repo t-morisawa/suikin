@@ -8,7 +8,14 @@ import numpy as np
 from pylab import *
 import struct
 
+import ConfigParser
+inifile = ConfigParser.SafeConfigParser()
+inifile.read("../conf/config.ini")
+varfile = ConfigParser.SafeConfigParser()
+varfile.read("../conf/var.ini")
+
 CHUNK = 1024
+FADEOUT = varfile.getfloat("output", "fade_out")
 
 class AudioPlayer:
     """ A Class For Playing WAV Audio """
@@ -66,7 +73,7 @@ class AudioPlayer:
             data = struct.pack("h" * len(data), *data)
             self.stream.write(data)
             data = self.wf.readframes(CHUNK)
-            ii += 1
+            ii += FADEOUT
         #print time.time() - t 
 
         """#再生方法２
