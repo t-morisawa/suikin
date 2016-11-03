@@ -55,7 +55,7 @@ def setAudioFileFromClassLabelPath( class_label_path, player_pack ):
         player_pack[i].setAudioFile( "../clustering/"+inifile.get("config","sound_dir")+"/" + "{0:03d}".format(int(out_wav_num)) + "/sound.wav" )
     return 
 
-def output( class_label_path = None ):
+def output( class_label_path = None, source_dir='hayakuti_data' ):
     #print "{0:04d}".format(1)
     """player1 = outmod2.AudioPlayer()
     player1.setAudioFile( "./data/loop_117.wav" )
@@ -63,7 +63,8 @@ def output( class_label_path = None ):
     player1.setAudioLoopTimes( 1 )
     #play_time = player1.getAudioPlayTime()
     """
-
+    global DATA_DIR
+    DATA_DIR="../clustering/"+source_dir# +inifile.get("config","sound_dir")
     seq_list = setTiming()
     
     # Listとして設定
