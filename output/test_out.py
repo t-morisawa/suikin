@@ -4,6 +4,7 @@ import random
 import cPickle as pickle
 import numpy.random as rd
 import os
+import json
 #import cv2
 
 import ConfigParser
@@ -18,6 +19,13 @@ TIME_INTVL = varfile.getfloat("output","time_intvl")
 DATA_DIR="../clustering/"+inifile.get("config","sound_dir")
 SOUND_FILE=inifile.get("config","sound_file")
 
+PLAY_DIRS = varfile.get("output","play_dirs").split(',')
+# 実行ファイルからのパスを追加
+for i, play_dir in enumerate(PLAY_DIRS):
+    PLAY_DIRS[i] = DATA_DIR + '/' + play_dir
+
+IS_RHYTHM = varfile.getboolean("output","is_rhythm")
+    
 def setTiming():
     seq_list = []
     for i in range( MAX_PLAY_NUM ):
@@ -32,17 +40,80 @@ def setTiming():
 
 def setAudioFile( player_pack ):
     dir_list = []
+    file_list = []
     path = DATA_DIR
-    for item in os.listdir(path):
-        if os.path.isdir(os.path.join(path,item)):
-            dir_list.append(item)
 
-    for i in range(MAX_PLAY_NUM): # 
-        out_wav_num = random.choice(dir_list)
-        print out_wav_num
-        player_pack[i].setAudioFile( DATA_DIR + "/" + out_wav_num + "/" + SOUND_FILE )
+    if PLAY_DIRS == [path+'/']: #全選択の場合
+        for dirName, subdirList, fileList in os.walk(path):
+            if dirName == path:
+                continue
+            dir_list.append(dirName)
+            fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
+            print fileListOnlyWav
+            file_list.append(fileListOnlyWav)
+    else:
+        for dirName, subdirList, fileList in os.walk(path):
+            if dirName == path:
+                continue
+            if dirName not in PLAY_DIRS:
+                continue
+            dir_list.append(dirName)
+            fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
+            print fileListOnlyWav
+            file_list.append(fileListOnlyWav)
+
+    #パターン3
+    # my_dir_list = ['002',
+    #                '002',
+    #                '002',
+    #                '001',
+    #                '002',
+    #                '002',
+    #                '001',
+    #                '001',
+    #                '002',
+    #                '002',
+    #                '002',
+    #                '001',
+    #                '002',
+    #                '002',
+    #                '001',
+    #                '008']
+    # for i in range(MAX_PLAY_NUM): # 
+    #     player_pack[i].setAudioFile( DATA_DIR + "/" + my_dir_list[i] + "/" + SOUND_FILE )
+
+    # パターン2
+    if IS_RHYTHM:
+        main_num = random.randint(0, len(dir_list)-1)
+        main_dir = dir_list[main_num]
+        main_file = random.choice(file_list[main_num])
+        sub_num = random.randint(0, len(dir_list)-1)
+        sub_dir = dir_list[sub_num]
+        sub_file = random.choice(file_list[sub_num])
+        for i in range(MAX_PLAY_NUM): # 
+            if i % 4 == 3:
+                rand_num = random.randint(0, len(dir_list)-1)
+                rand_dir = dir_list[rand_num]
+                rand_file = random.choice(file_list[rand_num])
+                dir_name = rand_dir
+                file_name = rand_file
+            elif i% 4 == 2:
+                dir_name = sub_dir
+                file_name = sub_file
+            else:
+                dir_name = main_dir
+                file_name = main_file
+            player_pack[i].setAudioFile( dir_name + "/" + file_name )
+    
+    #パターン1
+    else:
+        for i in range(MAX_PLAY_NUM):
+            number = random.randint(0, len(dir_list)-1)
+            dir_name = dir_list[number]
+            file_name = random.choice(file_list[number])
+            player_pack[i].setAudioFile( dir_name + "/" + file_name )
+
     return 
-
 
 def setAudioFileFromClassLabelPath( class_label_path, player_pack ):
     # ラベルリストから
