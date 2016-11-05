@@ -49,7 +49,6 @@ def setAudioFile( player_pack ):
                 continue
             dir_list.append(dirName)
             fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
-            print fileListOnlyWav
             file_list.append(fileListOnlyWav)
     else:
         for dirName, subdirList, fileList in os.walk(path):
@@ -59,7 +58,6 @@ def setAudioFile( player_pack ):
                 continue
             dir_list.append(dirName)
             fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
-            print fileListOnlyWav
             file_list.append(fileListOnlyWav)
 
     #パターン3
