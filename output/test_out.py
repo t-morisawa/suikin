@@ -20,6 +20,14 @@ DATA_DIR="../clustering/"+inifile.get("config","sound_dir")
 SOUND_FILE=inifile.get("config","sound_file")
 
 PLAY_DIRS = varfile.get("output","play_dirs").split(',')
+# 全選択の場合はDATA_DIR直下のディレクトリを取得
+if PLAY_DIRS == [""]:
+    del PLAY_DIRS[:] # リストの全要素削除
+    path = DATA_DIR
+    for item in os.listdir(path):
+        if os.path.isdir(os.path.join(path,item)):
+            PLAY_DIRS.append(item)
+
 # 実行ファイルからのパスを追加
 for i, play_dir in enumerate(PLAY_DIRS):
     PLAY_DIRS[i] = DATA_DIR + '/' + play_dir
@@ -39,26 +47,14 @@ def setTiming():
     return seq_list
 
 def setAudioFile( player_pack ):
-    dir_list = []
-    file_list = []
     path = DATA_DIR
+    file_list = []
 
-    if PLAY_DIRS == [path+'/']: #全選択の場合
-        for dirName, subdirList, fileList in os.walk(path):
-            if dirName == path:
-                continue
-            dir_list.append(dirName)
+    for play_dir in PLAY_DIRS:
+        for dirName, subdirList, fileList in os.walk(play_dir):
             fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
-            file_list.append(fileListOnlyWav)
-    else:
-        for dirName, subdirList, fileList in os.walk(path):
-            if dirName == path:
-                continue
-            if dirName not in PLAY_DIRS:
-                continue
-            dir_list.append(dirName)
-            fileListOnlyWav = filter(lambda a: '.wav' in a , fileList)
-            file_list.append(fileListOnlyWav)
+            for fileName in fileListOnlyWav:
+                file_list.append(dirName + '/' + fileName)
 
     #パターン3
     # my_dir_list = ['002',
@@ -82,34 +78,24 @@ def setAudioFile( player_pack ):
 
     # パターン2
     if IS_RHYTHM:
-        main_num = random.randint(0, len(dir_list)-1)
-        main_dir = dir_list[main_num]
-        main_file = random.choice(file_list[main_num])
-        sub_num = random.randint(0, len(dir_list)-1)
-        sub_dir = dir_list[sub_num]
-        sub_file = random.choice(file_list[sub_num])
+        main_file = random.choice(file_list)
+        sub_file = random.choice(file_list)
         for i in range(MAX_PLAY_NUM): # 
             if i % 4 == 3:
-                rand_num = random.randint(0, len(dir_list)-1)
-                rand_dir = dir_list[rand_num]
-                rand_file = random.choice(file_list[rand_num])
-                dir_name = rand_dir
-                file_name = rand_file
+                rand_file = random.choice(file_list)
+                play_file = rand_file
             elif i% 4 == 2:
-                dir_name = sub_dir
-                file_name = sub_file
+                play_file = sub_file
             else:
-                dir_name = main_dir
-                file_name = main_file
-            player_pack[i].setAudioFile( dir_name + "/" + file_name )
-    
+                play_file = main_file
+            player_pack[i].setAudioFile( play_file )
+
     #パターン1
     else:
         for i in range(MAX_PLAY_NUM):
-            number = random.randint(0, len(dir_list)-1)
-            dir_name = dir_list[number]
-            file_name = random.choice(file_list[number])
-            player_pack[i].setAudioFile( dir_name + "/" + file_name )
+            play_file = random.choice(file_list)
+            player_pack[i].setAudioFile( play_file )
+            print play_file
 
     return 
 
