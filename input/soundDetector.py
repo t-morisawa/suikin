@@ -25,6 +25,7 @@ CHUNK_SIZE = varfile.getint("input","chunk_size")
 RATE = varfile.getint("input","rate")
 FTIME = varfile.getfloat("input","ftime")
 FORMAT = pyaudio.paInt16
+VERBOSE = varfile.getboolean("input", "verbose")
 
 #録音開始時刻
 STARTTIME = -1
@@ -34,7 +35,8 @@ def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
     count = 0
 
-    #print max(snd_data)
+    if VERBOSE is True:
+        print max(snd_data)
     return max(snd_data) < THRESHOLD
 
 def normalize(snd_data):

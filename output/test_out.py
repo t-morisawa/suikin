@@ -19,18 +19,23 @@ TIME_INTVL = varfile.getfloat("output","time_intvl")
 DATA_DIR="../clustering/"+inifile.get("config","sound_dir")
 SOUND_FILE=inifile.get("config","sound_file")
 
-PLAY_DIRS = varfile.get("output","play_dirs").split(',')
-# 全選択の場合はDATA_DIR直下のディレクトリを取得
-if PLAY_DIRS == [""]:
-    del PLAY_DIRS[:] # リストの全要素削除
-    path = DATA_DIR
-    for item in os.listdir(path):
-        if os.path.isdir(os.path.join(path,item)):
-            PLAY_DIRS.append(item)
+def get_play_dirs(path):
+    PLAY_DIRS = varfile.get("output","play_dirs").split(',')
+    # 全選択の場合はDATA_DIR直下のディレクトリを取得
+    if PLAY_DIRS == [""]:
+        del PLAY_DIRS[:] # リストの全要素削除
+        path = DATA_DIR
+        for item in os.listdir(path):
+            if os.path.isdir(os.path.join(path,item)):
+                PLAY_DIRS.append(item)
 
-# 実行ファイルからのパスを追加
-for i, play_dir in enumerate(PLAY_DIRS):
-    PLAY_DIRS[i] = DATA_DIR + '/' + play_dir
+    # 実行ファイルからのパスを追加
+    for i, play_dir in enumerate(PLAY_DIRS):
+        PLAY_DIRS[i] = DATA_DIR + '/' + play_dir
+
+    return PLAY_DIRS
+
+PLAY_DIRS = get_play_dirs(DATA_DIR)
 
 IS_RHYTHM = varfile.getboolean("output","is_rhythm")
     
