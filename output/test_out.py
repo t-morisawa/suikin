@@ -19,6 +19,13 @@ TIME_INTVL = varfile.getfloat("output","time_intvl")
 DATA_DIR="../clustering/"+inifile.get("config","sound_dir")
 SOUND_FILE=inifile.get("config","sound_file")
 
+IS_RHYTHM = varfile.getboolean("output","is_rhythm")
+IS_MANUAL = varfile.getboolean("output","is_manual")
+
+def search_index(whole, part):
+    indices = [i for i, s in enumerate(whole) if part in s]
+    return indices
+
 def get_play_dirs(path):
     PLAY_DIRS = varfile.get("output","play_dirs").split(',')
     # 全選択の場合はDATA_DIR直下のディレクトリを取得
@@ -37,8 +44,6 @@ def get_play_dirs(path):
 
 PLAY_DIRS = get_play_dirs(DATA_DIR)
 
-IS_RHYTHM = varfile.getboolean("output","is_rhythm")
-    
 def setTiming():
     seq_list = []
     for i in range( MAX_PLAY_NUM ):
@@ -81,8 +86,19 @@ def setAudioFile( player_pack ):
     # for i in range(MAX_PLAY_NUM): # 
     #     player_pack[i].setAudioFile( DATA_DIR + "/" + my_dir_list[i] + "/" + SOUND_FILE )
 
+    if IS_MANUAL:
+        i=0
+        # search_indexの第二引数にファイルパス（一部でも可）を入れると検索される
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'C')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'E')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'G')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'E')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'C')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'E')[0]] ); i=i+1
+        player_pack[i].setAudioFile( file_list[search_index(file_list, 'G')[0]] ); i=i+1
+
     # パターン2
-    if IS_RHYTHM:
+    elif IS_RHYTHM:
         main_file = random.choice(file_list)
         sub_file = random.choice(file_list)
         for i in range(MAX_PLAY_NUM): # 
@@ -97,10 +113,11 @@ def setAudioFile( player_pack ):
 
     #パターン1
     else:
+        print file_list
         for i in range(MAX_PLAY_NUM):
             play_file = random.choice(file_list)
             player_pack[i].setAudioFile( play_file )
-            print play_file
+            #print play_file
 
     return 
 
